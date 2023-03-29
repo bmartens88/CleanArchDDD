@@ -1,4 +1,6 @@
-﻿namespace CleanArch.Api;
+﻿using CleanArch.Domain.TodoListAggregate.ValueObjects;
+
+namespace CleanArch.Api;
 
 public sealed class ApiStartup
 {
