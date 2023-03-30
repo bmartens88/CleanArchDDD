@@ -1,7 +1,7 @@
 using CleanArch.Domain.TodoListAggregate.ValueObjects;
 using FluentAssertions;
 
-namespace CleanArch.Domain.Tests.Unit;
+namespace CleanArch.Domain.Tests.Unit.TodoListAggregate.ValueObjects;
 
 public sealed class TodoListIdTests
 {
@@ -45,6 +45,7 @@ public sealed class TodoListIdTests
         var sut = TodoListId.Create(id);
 
         // Assert
+        sut.Should().NotBeNull();
         sut.Value.Should().Be(id);
     }
 
@@ -75,35 +76,34 @@ public sealed class TodoListIdTests
     }
 
     [Fact]
-    public void Equals_ShouldReturnFalse_WhenGivenTodoListIdsWithDifferentId()
+    public void NotEquals_ShouldReturnTrue_WhenGivenTodoListIdsWithDifferentIds()
     {
         // Arrange
         var sut1 = TodoListId.CreateUnique();
         var sut2 = TodoListId.CreateUnique();
 
         // Act
-        var equals = sut1 == sut2;
+        var result = sut1 != sut2;
 
         // Assert
-        equals.Should().BeFalse();
+        result.Should().BeTrue();
     }
 
     [Fact]
-    public void NotEquals_ShouldReturnTrue_WhenGivenTodoListIdsWithDifferentId()
+    public void Equals_ShouldReturnFalse_WhenGivenNull()
     {
         // Arrange
-        var sut1 = TodoListId.CreateUnique();
-        var sut2 = TodoListId.CreateUnique();
+        var sut = TodoListId.CreateUnique();
 
         // Act
-        var equals = sut1 != sut2;
+        var result = sut.Equals(null);
 
         // Assert
-        equals.Should().BeTrue();
+        result.Should().BeFalse();
     }
 
     [Fact]
-    public void NotEquals_ShouldReturnFalse_WhenGivenTodoListIdsWithSameId()
+    public void GetHashCode_ShouldReturnSameValue_WhenGivenTodoListIdsWithSameValues()
     {
         // Arrange
         var id = Guid.NewGuid();
@@ -111,9 +111,10 @@ public sealed class TodoListIdTests
         var sut2 = TodoListId.Create(id);
 
         // Act
-        var equals = sut1 != sut2;
+        var hash1 = sut1.GetHashCode();
+        var hash2 = sut2.GetHashCode();
 
         // Assert
-        equals.Should().BeFalse();
+        hash1.Should().Be(hash2);
     }
 }

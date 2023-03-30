@@ -1,4 +1,5 @@
-﻿using CleanArch.Domain.Models;
+﻿using Ardalis.GuardClauses;
+using CleanArch.Domain.Models;
 
 namespace CleanArch.Domain.TodoListAggregate.ValueObjects;
 
@@ -26,7 +27,7 @@ public sealed class TodoItemId : ValueObject
     /// Generates a new instance of the <see cref="TodoItemId"/> Value Object.
     /// </summary>
     /// <returns>New <see cref="TodoItemId"/> instance.</returns>
-    public static TodoItemId CreateUniquie()
+    public static TodoItemId CreateUnique()
     {
         return new TodoItemId(Guid.NewGuid());
     }
@@ -39,6 +40,8 @@ public sealed class TodoItemId : ValueObject
     /// <returns>New <see cref="TodoItemId"/> instance.</returns>
     public static TodoItemId Create(Guid value)
     {
+        Guard.Against.NullOrEmpty(value);
+        
         return new TodoItemId(value);
     }
 
