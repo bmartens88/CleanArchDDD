@@ -14,9 +14,10 @@ public static class LengthGuard
     /// <param name="input">The input string.</param>
     /// <param name="length">The length parameter for the Guard Clause.</param>
     /// <param name="parameterName">Optional name of the parameter which is validated.</param>
-    public static void Length(this IGuardClause guardClause, string input, int length, [CallerArgumentExpression("input")] string? parameterName = null)
+    public static string Length(this IGuardClause guardClause, string input, int length, [CallerArgumentExpression("input")] string? parameterName = null)
     {
         if (input.Length >= length)
             throw new ArgumentException($"Should not exceed length of {length}", parameterName);
+        return input;
     }
 }

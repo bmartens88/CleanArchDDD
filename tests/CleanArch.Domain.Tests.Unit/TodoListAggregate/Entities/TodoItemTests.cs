@@ -1,6 +1,7 @@
 ﻿using CleanArch.Domain.TodoListAggregate.Entities;
 using CleanArch.Domain.TodoListAggregate.ValueObjects;
 using FluentAssertions;
+using CleanArch.Domain.Tests.Unit.Shared;
 
 namespace CleanArch.Domain.Tests.Unit.TodoListAggregate.Entities;
 
@@ -20,6 +21,24 @@ public sealed class TodoItemTests
             .Throw<ArgumentException>()
             .WithParameterName(paramName)
             .WithMessage("Value cannot be null.*");
+    }
+
+    [Theory]
+    [InlineData(Constants.TO_LONG_PARAM_VALUE, "test", "name")]
+    [InlineData("test", Constants.TO_LONG_PARAM_VALUE, "description")]
+    public void Create_ShouldThrowException_WhenGivenAParameterWithLengthGreaterThan100(
+        string name,
+        string description,
+        string paramName)
+    {
+        // Act
+        var act = () => TodoItem.Create(name, description);
+
+        // Assert
+        act.Should()
+            .Throw<ArgumentException>()
+            .WithParameterName(paramName)
+            .WithMessage("Should not exceed length of 100*");
     }
 
     [Fact]
@@ -47,7 +66,9 @@ public sealed class TodoItemTests
         var sut = TodoItem.Create("test", "test");
 
         // Act
+#pragma warning disable CS8625
         var act = () => sut.SetName(null);
+#pragma warning restore CS8625
 
         // Assert
         act.Should()
@@ -77,7 +98,9 @@ public sealed class TodoItemTests
         var sut = TodoItem.Create("test", "test");
 
         // Act
+#pragma warning disable CS8625
         var act = () => sut.SetDescription(null);
+#pragma warning restore CS8625
 
         // Assert
         act.Should()

@@ -20,7 +20,7 @@ public sealed class TodoItemId : ValueObject
     /// <param name="value">The value to store in this Value Object.</param>
     private TodoItemId(Guid value)
     {
-        Value = value;
+        Value = Guard.Against.NullOrEmpty(value);
     }
 
     /// <summary>
@@ -40,8 +40,6 @@ public sealed class TodoItemId : ValueObject
     /// <returns>New <see cref="TodoItemId"/> instance.</returns>
     public static TodoItemId Create(Guid value)
     {
-        Guard.Against.NullOrEmpty(value);
-        
         return new TodoItemId(value);
     }
 
