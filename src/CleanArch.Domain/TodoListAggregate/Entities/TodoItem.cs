@@ -47,7 +47,9 @@ public sealed class TodoItem : Entity<TodoItemId>
         : base(id)
     {
         Guard.Against.NullOrEmpty(name);
+        Guard.Against.Length(name, 100);
         Guard.Against.NullOrEmpty(description);
+        Guard.Against.Length(description, 100);
 
         Name = name;
         Description = description;
@@ -88,6 +90,7 @@ public sealed class TodoItem : Entity<TodoItemId>
     public void SetName(string name)
     {
         Guard.Against.NullOrEmpty(name);
+        Guard.Against.Length(name, 100);
 
         Name = name;
     }
@@ -99,6 +102,7 @@ public sealed class TodoItem : Entity<TodoItemId>
     public void SetDescription(string description)
     {
         Guard.Against.NullOrEmpty(description);
+        Guard.Against.Length(description, 100);
 
         Description = description;
     }
