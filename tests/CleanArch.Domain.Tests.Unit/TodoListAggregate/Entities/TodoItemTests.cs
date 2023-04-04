@@ -2,6 +2,8 @@
 using CleanArch.Domain.TodoListAggregate.ValueObjects;
 using FluentAssertions;
 using CleanArch.Domain.Tests.Unit.Shared;
+using CleanArch.Domain.TodoListAggregate.Events;
+using CleanArch.Domain.Models;
 
 namespace CleanArch.Domain.Tests.Unit.TodoListAggregate.Entities;
 
@@ -168,5 +170,41 @@ public sealed class TodoItemTests
         // Assert
         equals.Should()
             .BeTrue();
+    }
+
+    [Fact]
+    public void TodoItem_ShouldRegisterDomainEvent_WhenTheItemIsCompleted()
+    {
+        // Arrange
+        var id = TodoItemId.CreateUnique();
+        var sut = TodoItem.Create("Test", "Test", id);
+
+        // Act
+        sut.MarkItemAsCompleted();
+
+        // Assert
+        sut.DomainEvents.Should().ContainSingle();
+        sut.DomainEvents.Should().ContainItemsAssignableTo<DomainEvent>();
+        sut.DomainEvents.Should().AllBeOfType<TodoItemCompletedEvent>();
+        sut.DomainEvents.Should().SatisfyRespectively(
+            first =>
+            {
+                first.As<TodoItemCompletedEvent>().TodoItemId.Should()
+                    .Be(id);
+            });
+    }
+
+    [Fact]
+    public void MarkAsCompleted_ShouldNotRegisterDomainEvent_WhenItemWasAlreadyCompleted()
+    {
+        // Arrange
+        var sut = TodoItem.Create("Test", "Test");
+
+        // Act
+        sut.MarkItemAsCompleted();
+        sut.MarkItemAsCompleted();
+
+        // Assert
+        sut.DomainEvents.Should().ContainSingle();
     }
 }

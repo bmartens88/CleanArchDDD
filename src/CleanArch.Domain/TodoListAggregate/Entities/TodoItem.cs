@@ -1,5 +1,6 @@
 ﻿using Ardalis.GuardClauses;
 using CleanArch.Domain.Models;
+using CleanArch.Domain.TodoListAggregate.Events;
 using CleanArch.Domain.TodoListAggregate.ValueObjects;
 
 namespace CleanArch.Domain.TodoListAggregate.Entities;
@@ -109,5 +110,6 @@ public sealed class TodoItem : Entity<TodoItemId>
         if (Completed) return;
         Completed = true;
         DateCompleted = DateTime.UtcNow;
+        RegisterDomainEvent(new TodoItemCompletedEvent(Id));
     }
 }

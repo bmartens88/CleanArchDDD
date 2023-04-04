@@ -1,6 +1,8 @@
+using CleanArch.Domain.Models;
 using CleanArch.Domain.Tests.Unit.Shared;
 using CleanArch.Domain.TodoListAggregate;
 using CleanArch.Domain.TodoListAggregate.Entities;
+using CleanArch.Domain.TodoListAggregate.Events;
 using CleanArch.Domain.TodoListAggregate.ValueObjects;
 using FluentAssertions;
 
@@ -187,6 +189,44 @@ public sealed class TodoListTests
         // Assert
         equals.Should()
             .BeTrue();
+    }
+
+    [Fact]
+    public void TodoList_ShouldRegisterDomainEvent_WhenTheListIsCompleted()
+    {
+        // Arrange
+        var itemId = TodoItemId.CreateUnique();
+        var listId = TodoListId.CreateUnique();
+        var sut = TodoList.Create("Test", "Test", listId, new() { TodoItem.Create("Test", "Test", itemId) });
+
+        // Act
+        sut.MarkItemAsCompleted(itemId);
+
+        // Assert
+        sut.DomainEvents.Should().ContainSingle();
+        sut.DomainEvents.Should().ContainItemsAssignableTo<DomainEvent>();
+        sut.DomainEvents.Should().AllBeOfType<TodoListCompletedEvent>();
+        sut.DomainEvents.Should().SatisfyRespectively(
+            first =>
+            {
+                first.As<TodoListCompletedEvent>().TodoListId.Should()
+                    .Be(listId);
+            });
+    }
+
+    [Fact]
+    public void MarkAsCompleted_ShouldNotRegisterDomainEvent_WhenListWasAlreadyCompleted()
+    {
+        // Arrange
+        var itemId = TodoItemId.CreateUnique();
+        var sut = TodoList.Create("Test", "Test", items: new() { TodoItem.Create("Test", "Test", itemId) });
+
+        // Act
+        sut.MarkItemAsCompleted(itemId);
+        sut.MarkItemAsCompleted(itemId);
+
+        // Assert
+        sut.DomainEvents.Should().ContainSingle();
     }
 
     private TodoList CreateTodoListInstance(
