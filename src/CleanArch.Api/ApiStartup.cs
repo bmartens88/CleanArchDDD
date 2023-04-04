@@ -1,4 +1,5 @@
-﻿using CleanArch.Domain.TodoListAggregate.ValueObjects;
+﻿using CleanArch.Api.TodoLists;
+using CleanArch.Domain.TodoListAggregate.ValueObjects;
 
 namespace CleanArch.Api;
 
@@ -27,6 +28,8 @@ public sealed class ApiStartup
         }
 
         app.UseHttpsRedirection();
+
+        app.MapTodoLists();
 
         return app.RunAsync();
     }
